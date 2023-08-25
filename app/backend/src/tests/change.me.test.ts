@@ -7,12 +7,15 @@ import { app } from '../app';
 import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
+import { Sequelize } from 'sequelize';
+import SequelizeTeam from '../database/models/SequelizeTeam'
+import { teams } from './mocks/teams.mock';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
+describe('Tabela Teams', () => {
   /**
    * Exemplo do uso de stubs com tipos
    */
@@ -39,7 +42,14 @@ describe('Seu teste', () => {
   //   expect(...)
   // });
 
-  it('Seu sub-teste', () => {
-    expect(false).to.be.eq(true);
+  it('GET /teams retorna todos os times', async () => {
+    sinon.stub(SequelizeTeam, 'findAll').resolves(teams as any);
+
+    const { status, body } = await chai.request(app).get('/teams');
+
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal(teams);
   });
+
+  afterEach(sinon.restore);
 });
