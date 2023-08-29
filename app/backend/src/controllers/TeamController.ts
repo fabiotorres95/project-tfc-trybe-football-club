@@ -9,4 +9,10 @@ export default class TeamController {
     const ServiceResponse = await this.teamService.getAllTeams();
     res.status(mapStatusHTTP(ServiceResponse.status)).json(ServiceResponse.data);
   }
+
+  public async getOneTeam(req: Request, res: Response) {
+    const { id } = req.params;
+    const ServiceResponse = await this.teamService.getOneTeam(Number(id));
+    res.status(mapStatusHTTP(ServiceResponse.status)).json(ServiceResponse.data);
+  }
 }
