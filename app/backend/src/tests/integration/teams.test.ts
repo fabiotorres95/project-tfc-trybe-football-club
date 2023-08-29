@@ -3,13 +3,13 @@ import * as chai from 'chai';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
-import { app } from '../app';
-import Example from '../database/models/ExampleModel';
+import { app } from '../../app';
+import Example from '../../database/models/ExampleModel';
 
 import { Response } from 'superagent';
 import { Sequelize } from 'sequelize';
-import SequelizeTeam from '../database/models/SequelizeTeam'
-import { teams } from './mocks/teams.mock';
+import SequelizeTeam from '../../database/models/SequelizeTeam'
+import { team, teams } from '../mocks/teams.mock';
 
 chai.use(chaiHttp);
 
@@ -49,6 +49,15 @@ describe('Tabela Teams', () => {
 
     expect(status).to.equal(200);
     expect(body).to.deep.equal(teams);
+  });
+
+  it('GET /teams/:id retorna o time correto', async () => {
+    sinon.stub(SequelizeTeam, 'findByPk').resolves(team as any);
+
+    const { status, body } = await chai.request(app).get('/teams/1');
+
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal(team);
   });
 
   afterEach(sinon.restore);
