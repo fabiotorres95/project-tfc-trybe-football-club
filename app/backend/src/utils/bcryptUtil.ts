@@ -1,13 +1,13 @@
 import * as bcrypt from 'bcryptjs';
 
-function sign(password: string) : string {
-  const token = bcrypt.hashSync(password);
+async function sign(password: string) : Promise<string> {
+  const token = await bcrypt.hash(password, 'segredaço');
 
   return token;
 }
 
-function verify(password: string, hash: string): boolean {
-  const result = bcrypt.compareSync(password, hash);
+async function verify(password: string, hash: string): Promise<boolean> {
+  const result = await bcrypt.compare(password, hash);
 
   return result;
 }

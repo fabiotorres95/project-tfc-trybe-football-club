@@ -17,7 +17,7 @@ export default class UserService {
       return { status: 'INVALID_DATA', data: { message: 'Invalid email or password' } };
     }
 
-    const isTokenCorrect = bcryptUtil.verify(user.password, dbUser.password);
+    const isTokenCorrect = await bcryptUtil.verify(user.password, dbUser.password);
 
     if (!isTokenCorrect) {
       return { status: 'INVALID_DATA', data: { message: 'Invalid email or password' } };

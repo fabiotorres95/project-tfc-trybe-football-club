@@ -39,7 +39,7 @@ describe('Rota /login', () => {
   it('verifica se não é possível fazer login com senha errada',async () => {
     const goodResponse = SequelizeUser.build(completeData);
     sinon.stub(SequelizeUser, 'findAll').resolves([goodResponse])
-    sinon.stub(bcryptUtil, 'verify').returns(false);
+    sinon.stub(bcryptUtil, 'verify').resolves(false);
 
     const { status, body } = await chai.request(app).post('/login').send(data);
 
@@ -50,7 +50,7 @@ describe('Rota /login', () => {
   it('se tudo está certo, verifica se é possível fazer login', async () => {
     const goodResponse = SequelizeUser.build(completeData);
     sinon.stub(SequelizeUser, 'findAll').resolves([goodResponse])
-    sinon.stub(bcryptUtil, 'verify').returns(true);
+    sinon.stub(bcryptUtil, 'verify').resolves(true);
 
     const { status, body } = await chai.request(app).post('/login').send(data);
 
