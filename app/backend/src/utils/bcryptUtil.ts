@@ -1,12 +1,18 @@
 import * as bcrypt from 'bcryptjs';
-import IUser from '../Interfaces/IUser';
 
-type TokenPayload = Omit<IUser, 'password'>;
-
-function sign(payload: TokenPayload) : string {
-  const token = bcrypt.hashSync(payload.toString());
+function sign(password: string) : string {
+  const token = bcrypt.hashSync(password);
 
   return token;
 }
 
-export default sign;
+function verify(password: string, hash: string): boolean {
+  const result = bcrypt.compareSync(password, hash);
+
+  return result;
+}
+
+export default {
+  sign,
+  verify,
+};

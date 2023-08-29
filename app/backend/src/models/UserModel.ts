@@ -6,10 +6,12 @@ import { IUserModel } from '../Interfaces/IUserModel';
 export default class UserModel implements IUserModel {
   private model = SequelizeUser;
 
-  async findUser(data: NewEntity<IUser>): Promise<IUser> {
+  async findUser(data: NewEntity<IUser>): Promise<IUser | null> {
     const [dbData] = await this.model.findAll({ where: { email: data.email } });
-    const { id, username, role, email, password }: IUser = dbData;
 
+    if (!dbData) return null;
+
+    const { id, username, role, email, password }: IUser = dbData;
     return { id, username, role, email, password };
   }
 }

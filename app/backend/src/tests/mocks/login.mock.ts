@@ -6,13 +6,14 @@ const noPasswordData = {
   email: 'xablau@xablau.xablau'
 }
 
-const goodData = {
+
+const data = {
   email: 'xablau@xablau.xablau',
   password: 'asdffdsa'
 }
 
 const completeData = {
-  ...goodData,
+  ...data,
   username: 'xablau',
   role: 'mito',
 }
@@ -20,6 +21,6 @@ const completeData = {
 export {
   noEmailData,
   noPasswordData,
-  goodData,
+  data,
   completeData
 }
