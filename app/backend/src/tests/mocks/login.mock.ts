@@ -18,9 +18,16 @@ const completeData = {
   role: 'mito',
 }
 
+const payloadData = {
+  ...completeData,
+  id: 1,
+  password: undefined
+}
+
 export {
   noEmailData,
   noPasswordData,
   data,
-  completeData
+  completeData,
+  payloadData
 }

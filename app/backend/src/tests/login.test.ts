@@ -5,14 +5,22 @@ import { app } from '../app'
 import chaiHttp = require('chai-http');
 
 import SequelizeUser from '../database/models/SequelizeUser'
-import { completeData, data, noEmailData, noPasswordData } from './mocks/login.mock'
+import { 
+  completeData,
+  data,
+  noEmailData,
+  noPasswordData, 
+  payloadData,
+} from './mocks/login.mock'
+
 import bcryptUtil from '../utils/bcryptUtil';
+import jwtUtil from '../utils/jwtUtil';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Rota /login', () => {
+describe('Rota POST /login', () => {
   it('verifica se não é possível fazer login sem o email', async () => {
     const { status, body } = await chai.request(app).post('/login').send(noEmailData);
 
@@ -26,6 +34,8 @@ describe('Rota /login', () => {
     expect(status).to.equal(400);
     expect(body).to.deep.equal({ message: 'All fields must be filled' });
   });
+
+  // falta testes de formatação do email e password
 
   it('verifica se não é possível fazer login com email fora do banco', async () => {
     sinon.stub(SequelizeUser, 'findAll').resolves([]);
@@ -56,6 +66,39 @@ describe('Rota /login', () => {
 
     expect(status).to.equal(200);
     expect(body).to.have.key('token');
+  });
+
+  afterEach(sinon.restore);
+});
+
+describe('Rota GET /login/role', () => {
+  it('verifica se não é possível retornar o objeto sem o token', async () => {
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set({ 'authorization': undefined });
+
+    expect(status).to.equal(401);
+    expect(body).to.deep.equal({ message: "Token not found" });
+  });
+
+  it('verifica se não é possível retornar o objeto com o token errado', async () => {
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set({ 'authorization': 'xablau' });
+
+    expect(status).to.equal(401);
+    expect(body).to.deep.equal({ message: "Token must be a valid token" });
+  });
+
+  it('verifica se o objeto é retornado com o token correto',async () => {
+    sinon.stub(jwtUtil, 'verify').returns(payloadData);
+
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set({ 'authorization': 'goodToken' });
+
+    expect(status).to.equal(200);
+    expect(body).to.deep.equal({ role: payloadData.role })
   });
 
   afterEach(sinon.restore);
