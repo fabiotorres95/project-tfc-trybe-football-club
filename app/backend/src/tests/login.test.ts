@@ -1,8 +1,8 @@
 import * as chai from 'chai'
 import * as sinon from 'sinon'
 import { app } from '../app'
-
-import chaiHttp from 'chai-http'
+// @ts-ignore
+import chaiHttp = require('chai-http');
 import SequelizeUser from '../database/models/SequelizeUser'
 import { completeData, goodData, noEmailData, noPasswordData } from './mocks/login.mock'
 
