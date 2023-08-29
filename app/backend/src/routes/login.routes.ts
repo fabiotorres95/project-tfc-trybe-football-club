@@ -1,0 +1,13 @@
+import { Request, Response, Router } from 'express';
+import UserController from '../controllers/UserController';
+
+const userController = new UserController();
+
+const router = Router();
+
+router.post(
+  '/',
+  (req: Request, res: Response) => userController.postLogin(req, res),
+);
+
+export default router;
