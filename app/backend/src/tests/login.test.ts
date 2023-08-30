@@ -91,8 +91,9 @@ describe('Rota GET /login/role', () => {
   });
 
   it('verifica se o objeto é retornado com o token correto', async () => {
+    const goodResponse = SequelizeUser.build(completeData);
+    sinon.stub(SequelizeUser, 'findAll').resolves([goodResponse]);
     sinon.stub(jwtUtil, 'verify').returns(payloadData);
-  
 
     const { status, body } = await chai.request(app)
       .get('/login/role')

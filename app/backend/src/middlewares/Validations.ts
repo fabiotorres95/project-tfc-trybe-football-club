@@ -35,11 +35,9 @@ export default class Validations {
 
     const { status, data } = await this.userService.getRole(authorization);
 
-    if (status === 'INVALID_DATA') {
+    if (status && data) {
       return res.status(mapStatusHTTP(status)).json(data);
     }
-
-    return res.status(mapStatusHTTP(status)).json(data);
 
     next();
   }
