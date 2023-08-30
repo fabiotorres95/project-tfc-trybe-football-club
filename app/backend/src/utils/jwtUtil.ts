@@ -10,9 +10,18 @@ function sign(payload: PayloadData): string {
   return token;
 }
 
-function verify(token: string) : PayloadData {
-  const data = jwt.verify(token, secret) as PayloadData;
-  return data;
+function verify(token: string) : PayloadData | null {
+  const data = jwt.verify(token, secret);
+  if (typeof data !== 'string') {
+    return null;
+  }
+
+  const json = JSON.parse(data);
+  if (!json.id || !json.username || !json.role || !json.email) {
+    return null;
+  }
+
+  return json;
 }
 
 export default {

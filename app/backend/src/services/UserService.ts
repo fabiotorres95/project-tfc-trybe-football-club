@@ -29,8 +29,11 @@ export default class UserService {
 
   public async getRole(token: string): Promise<ServiceResponse<object>> {
     const user = jwtUtil.verify(token);
-    const dbUser = await this.userModel.findUser(user);
+    if (!user) {
+      return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
+    }
 
+    const dbUser = await this.userModel.findUser(user);
     if (!dbUser) {
       return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
     }

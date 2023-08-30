@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwtUtil from '../utils/jwtUtil';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 import UserService from '../services/UserService';
+import IUser from '../Interfaces/IUser';
 
 export default class UserController {
   constructor(private userService = new UserService()) {}
@@ -13,7 +14,7 @@ export default class UserController {
 
   static getRole(req: Request, res: Response) {
     const { authorization } = req.headers;
-    const data = jwtUtil.verify(authorization as string);
+    const data = jwtUtil.verify(authorization as string) as Partial<IUser>;
     res.status(200).json({ role: data.role });
   }
 }
