@@ -23,7 +23,8 @@ export default class UserService {
       return { status: 'INVALID_DATA', data: { message: 'Invalid email or password' } };
     }
 
-    const token = jwtUtil.sign(dbUser);
+    const { id, username, role, email } = dbUser;
+    const token = jwtUtil.sign({ id, username, role, email });
     return { status: 'SUCCESSFUL', data: { token } };
   }
 
@@ -33,7 +34,8 @@ export default class UserService {
       return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
     }
 
-    const dbUser = await this.userModel.findUser(user);
+    const { username, role, email } = user;
+    const dbUser = await this.userModel.findUser({ username, role, email });
     if (!dbUser) {
       return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
     }

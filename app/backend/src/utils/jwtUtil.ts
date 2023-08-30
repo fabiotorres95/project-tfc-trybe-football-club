@@ -12,16 +12,20 @@ function sign(payload: PayloadData): string {
 
 function verify(token: string) : PayloadData | null {
   const data = jwt.verify(token, secret);
-  if (typeof data !== 'string') {
-    return null;
+
+  if (typeof data === 'string') {
+    const json = JSON.parse(data);
+    if (!json.id || !json.username || !json.role || !json.email) {
+      return null;
+    }
+    return json;
   }
 
-  const json = JSON.parse(data);
-  if (!json.id || !json.username || !json.role || !json.email) {
+  const { id, username, role, email } = data;
+  if (!id || !username || !role || !email) {
     return null;
   }
-
-  return json;
+  return { id, username, role, email };
 }
 
 export default {
