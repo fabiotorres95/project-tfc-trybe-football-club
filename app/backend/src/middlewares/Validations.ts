@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
+import UserService from '../services/UserService';
 
 export default class Validations {
+  public userService: UserService = new UserService();
+
   static hasEmailAndPassword(req: Request, res: Response, next: NextFunction): Response | void {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -16,6 +20,27 @@ export default class Validations {
     if (!emailRegex.test(email) || password.length < 6) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+    next();
+  }
+
+  public async checkToken(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    const { authorization } = req.headers;
+    if (!authorization) {
+      return res.status(401).json({ message: 'Token not found' });
+    }
+
+    const { status, data } = await this.userService.getRole(authorization);
+
+    if (status === 'INVALID_DATA') {
+      return res.status(mapStatusHTTP(status)).json(data);
+    }
+
+    return res.status(mapStatusHTTP(status)).json(data);
+
     next();
   }
 }
