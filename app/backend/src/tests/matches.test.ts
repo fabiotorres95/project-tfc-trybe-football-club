@@ -47,14 +47,14 @@ describe('Rota /matches', () => {
 });
 
 describe('Rota /matches/:id/finish', () => {
-  it('the route cannot be accessed without a token', async () => {
+  it('a rota não pode ser acessada sem o token', async () => {
     const { status, body } = await chai.request(app).patch('/matches/1/finish');
 
     expect(status).to.equal(401);
     expect(body).to.deep.equal({ message: 'Token not found' });
   });
 
-  it('the route cannot be accessed with an invalid token', async () => {
+  it('a rota não pode ser acessada com o token inválido', async () => {
     sinon.stub(jwtUtil, 'verify').returns('Token must be a valid token');
 
     const { status, body } = await chai.request(app)
@@ -70,8 +70,8 @@ describe('Rota /matches/:id/finish', () => {
     const matchNotInProgress = { ...matchInProgress, inProgress: false };
     const newGoodResponse = SequelizeMatch.build(matchNotInProgress);
 
-    sinon.stub(SequelizeMatch, 'findAll').onFirstCall().resolves([goodResponse])
-      .onSecondCall().resolves([newGoodResponse]);
+    sinon.stub(SequelizeMatch, 'findByPk').onFirstCall().resolves(goodResponse)
+      .onSecondCall().resolves(newGoodResponse);
     sinon.stub(jwtUtil, 'verify').returns(payloadData);
 
     const { status, body } = await chai.request(app).patch('/matches/1/finish');
@@ -81,4 +81,34 @@ describe('Rota /matches/:id/finish', () => {
   });
 
   afterEach(sinon.restore);
-})
+});
+
+describe('Rota matches/:id', () => {
+  it('a rota não pode ser acessada sem o token', async () => {
+    const { status, body } = await chai.request(app).patch('/matches/1');
+
+    expect(status).to.equal(401);
+    expect(body).to.deep.equal({ message: 'Token not found' });
+  });
+
+  it('a rota não pode ser acessada com o token inválido', async () => {
+    sinon.stub(jwtUtil, 'verify').returns('Token must be a valid token');
+
+    const { status, body } = await chai.request(app)
+      .patch('/matches/1')
+      .set({ authorization: 'badToken'});
+
+    expect(status).to.equal(401);
+    expect(body).to.deep.equal({ message: 'Token must be a valid token' });
+  });
+
+  it('PATCH /matches/:id altera o resultado de uma partida',async () => {
+    const goodResponse = SequelizeMatch.build(matchInProgress);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(goodResponse);
+
+    const { status, body } = await chai.request(app).patch('/matches/1');
+
+    expect(status).to.equal(200);
+  });
+  afterEach(sinon.restore);
+});
