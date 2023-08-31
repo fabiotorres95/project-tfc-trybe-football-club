@@ -23,23 +23,7 @@ export default class UserService {
       return { status: 'INVALID_DATA', data: { message: 'Invalid email or password' } };
     }
 
-    const { id, username, role, email } = dbUser;
-    const token = jwtUtil.sign({ id, username, role, email });
+    const token = jwtUtil.sign(dbUser);
     return { status: 'SUCCESSFUL', data: { token } };
-  }
-
-  public async getRole(token: string): Promise<ServiceResponse<object>> {
-    const user = jwtUtil.verify(token);
-    if (!user) {
-      return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
-    }
-
-    const { username, role, email } = user;
-    const dbUser = await this.userModel.findUser({ username, role, email });
-    if (!dbUser) {
-      return { status: 'INVALID_DATA', data: { message: 'Token must be a valid token' } };
-    }
-
-    return { status: 'SUCCESSFUL', data: { role: dbUser.role } };
   }
 }

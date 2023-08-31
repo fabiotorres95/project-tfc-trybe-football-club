@@ -73,26 +73,24 @@ describe('Rota POST /login', () => {
 
 describe('Rota GET /login/role', () => {
   it('verifica se não é possível retornar o objeto sem o token', async () => {
-    const { status, body } = await chai.request(app).get('/login/role');
+    const { status, body } = await chai.request(app)
+      .get('/login/role')
+      .set({ 'authorization': undefined });
 
     expect(status).to.equal(401);
     expect(body).to.deep.equal({ message: "Token not found" });
   });
 
   it('verifica se não é possível retornar o objeto com o token errado', async () => {
-    sinon.stub(jwtUtil, 'verify').returns(null);
-
     const { status, body } = await chai.request(app)
       .get('/login/role')
-      .set( 'authorization', 'xablau' );
+      .set({ 'authorization': 'xablau' });
 
     expect(status).to.equal(401);
     expect(body).to.deep.equal({ message: "Token must be a valid token" });
   });
 
-  it('verifica se o objeto é retornado com o token correto', async () => {
-    const goodResponse = SequelizeUser.build(completeData);
-    sinon.stub(SequelizeUser, 'findAll').resolves([goodResponse]);
+  it('verifica se o objeto é retornado com o token correto',async () => {
     sinon.stub(jwtUtil, 'verify').returns(payloadData);
 
     const { status, body } = await chai.request(app)
