@@ -36,9 +36,15 @@ const matchesInProgress = [{
   ...matchInProgress,
 }]
 
+const payloadData = {
+  id: 1,
+  role: 'mito'
+}
+
 export {
   match,
   matches,
   matchInProgress,
-  matchesInProgress
+  matchesInProgress,
+  payloadData
 }
