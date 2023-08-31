@@ -13,4 +13,10 @@ router.post(
   (req: Request, res: Response) => userController.postLogin(req, res),
 );
 
+router.get(
+  '/role',
+  Validations.checkToken,
+  (req: Request, res: Response) => UserController.getRole(req, res),
+);
+
 export default router;

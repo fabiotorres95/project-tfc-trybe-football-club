@@ -23,7 +23,8 @@ export default class UserService {
       return { status: 'INVALID_DATA', data: { message: 'Invalid email or password' } };
     }
 
-    const token = jwtUtil.sign(dbUser);
+    const { id, role } = dbUser;
+    const token = jwtUtil.sign({ id, role });
     return { status: 'SUCCESSFUL', data: { token } };
   }
 }

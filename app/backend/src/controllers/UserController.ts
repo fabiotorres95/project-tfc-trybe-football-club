@@ -9,4 +9,9 @@ export default class UserController {
     const serviceResponse = await this.userService.postLogin(req.body);
     res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
   }
+
+  static getRole(_req: Request, res: Response) {
+    const { data } = res.locals;
+    res.status(200).json({ role: data.role });
+  }
 }

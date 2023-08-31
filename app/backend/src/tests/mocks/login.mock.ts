@@ -19,9 +19,8 @@ const completeData = {
 }
 
 const payloadData = {
-  ...completeData,
   id: 1,
-  password: undefined
+  role: 'mito'
 }
 
 export {
