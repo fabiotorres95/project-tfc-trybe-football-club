@@ -106,7 +106,7 @@ describe('Rota matches/:id', () => {
     const goodResponse = SequelizeMatch.build(matchInProgress);
     sinon.stub(SequelizeMatch, 'findByPk').resolves(goodResponse);
 
-    const { status, body } = await chai.request(app).patch('/matches/1');
+    const { status } = await chai.request(app).patch('/matches/1');
 
     expect(status).to.equal(200);
   });
