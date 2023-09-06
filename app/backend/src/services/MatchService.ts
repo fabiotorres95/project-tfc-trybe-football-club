@@ -16,4 +16,10 @@ export default class MatchService {
 
     return { status: 'SUCCESSFUL', data };
   }
+
+  public async patchMatchToFinished(id: number) {
+    const data = await this.matchModel.finishMatch(id);
+
+    return { status: 'SUCCESSFUL', data };
+  }
 }

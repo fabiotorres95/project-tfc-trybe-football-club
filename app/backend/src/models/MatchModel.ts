@@ -50,36 +50,10 @@ export default class MatchModel implements IMatchModel {
     return result;
   }
 
-  private async getTeam(id: number) {
-    const dbData = await this.teams.findByPk(id);
-    if (dbData) {
-      const { teamName } = dbData;
-      return teamName;
-    }
+  public async finishMatch(id: number) {
+    const data = { inProgress: false };
+    await this.match.update(data, { where: { id } });
 
-    return null;
-  }
-
-  public async findAllWithTeamNames() {
-    const matchesData = await this.findAll();
-    const result = matchesData.map(async (match) => {
-      const oldMatch = match;
-      const newMatch: IMatchWithTeams = { ...oldMatch,
-        homeTeam: { teamName: ' ' },
-        awayTeam: { teamName: ' ' } };
-
-      const homeTeamName = await this.getTeam(match.homeTeamId);
-      if (homeTeamName !== null) {
-        newMatch.homeTeam = { teamName: homeTeamName };
-      } else newMatch.homeTeam = { teamName: ' ' };
-      const awayTeamName = await this.getTeam(match.awayTeamId);
-      if (awayTeamName) {
-        newMatch.awayTeam = { teamName: awayTeamName };
-      } else newMatch.awayTeam = { teamName: ' ' };
-
-      return newMatch;
-    });
-
-    return result;
+    return { message: 'Finished' };
   }
 }
