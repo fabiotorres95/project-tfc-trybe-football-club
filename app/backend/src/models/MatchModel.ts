@@ -56,4 +56,10 @@ export default class MatchModel implements IMatchModel {
 
     return { message: 'Finished' };
   }
+
+  public async editMatch(id: number, data: Partial<IMatchWithTeams>) {
+    await this.match.update(data, { where: { id } });
+
+    return { message: `Match ${id} edited successfully` };
+  }
 }

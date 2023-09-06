@@ -22,4 +22,10 @@ export default class MatchService {
 
     return { status: 'SUCCESSFUL', data };
   }
+
+  public async patchMatch(id: number, bodyData: object) {
+    const data = await this.matchModel.editMatch(id, bodyData);
+
+    return { status: 'SUCCESSFUL', data };
+  }
 }
