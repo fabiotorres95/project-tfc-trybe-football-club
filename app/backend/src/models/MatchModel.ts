@@ -26,7 +26,7 @@ export default class MatchModel implements IMatchModel {
     return result;
   }
 
-  public async findAll() {
+  public async findAll(inProgress?: boolean) {
     const dbData = await this.match.findAll({
       include: [
         {
@@ -37,7 +37,17 @@ export default class MatchModel implements IMatchModel {
       ],
     });
 
-    return MatchModel.formatToIMatch(dbData as unknown as IMatchWithTeams[]);
+    let result = MatchModel.formatToIMatch(dbData as unknown as IMatchWithTeams[]);
+
+    if (inProgress === true) {
+      result = result.filter((match) => match.inProgress === true);
+    }
+
+    if (inProgress === false) {
+      result = result.filter((match) => match.inProgress === false);
+    }
+
+    return result;
   }
 
   private async getTeam(id: number) {

@@ -5,8 +5,14 @@ import { ServiceResponse } from '../Interfaces/ServiceResponse';
 export default class MatchService {
   constructor(private matchModel: IMatchModel = new MatchModel()) {}
 
-  public async getAllMatches(): Promise<ServiceResponse<object>> {
-    const data = await this.matchModel.findAll();
+  public async getAllMatches(inProgress?: boolean): Promise<ServiceResponse<object>> {
+    let data;
+
+    if (inProgress !== undefined) {
+      data = await this.matchModel.findAll(inProgress);
+    } else {
+      data = await this.matchModel.findAll();
+    }
 
     return { status: 'SUCCESSFUL', data };
   }
