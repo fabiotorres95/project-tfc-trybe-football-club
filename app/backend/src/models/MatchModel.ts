@@ -7,16 +7,37 @@ export default class MatchModel implements IMatchModel {
   private match = SequelizeMatch;
   private teams = SequelizeTeam;
 
+  private static formatToIMatch(data: IMatchWithTeams[]) {
+    const result = data.map((match) => {
+      const { id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress,
+        homeTeam, awayTeam } = match;
+
+      return { id,
+        homeTeamId,
+        homeTeamGoals,
+        awayTeamId,
+        awayTeamGoals,
+        inProgress,
+        homeTeam,
+        awayTeam,
+      };
+    });
+
+    return result;
+  }
+
   public async findAll() {
-    const dbData = await this.match.findAll();
-    return dbData.map(({
-      id,
-      homeTeamId,
-      homeTeamGoals,
-      awayTeamId,
-      awayTeamGoals,
-      inProgress,
-    }) => ({ id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress }));
+    const dbData = await this.match.findAll({
+      include: [
+        {
+          model: this.teams, as: 'homeTeam', attributes: { exclude: ['id'] },
+        }, {
+          model: this.teams, as: 'awayTeam', attributes: { exclude: ['id'] },
+        },
+      ],
+    });
+
+    return MatchModel.formatToIMatch(dbData as unknown as IMatchWithTeams[]);
   }
 
   private async getTeam(id: number) {
@@ -33,7 +54,9 @@ export default class MatchModel implements IMatchModel {
     const matchesData = await this.findAll();
     const result = matchesData.map(async (match) => {
       const oldMatch = match;
-      const newMatch: IMatchWithTeams = { ...oldMatch, homeTeam: {}, awayTeam: {} };
+      const newMatch: IMatchWithTeams = { ...oldMatch,
+        homeTeam: { teamName: ' ' },
+        awayTeam: { teamName: ' ' } };
 
       const homeTeamName = await this.getTeam(match.homeTeamId);
       if (homeTeamName !== null) {
