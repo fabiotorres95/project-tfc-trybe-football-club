@@ -1,6 +1,6 @@
 export type ServiceMessage = { message: string };
 
-type SuccessTypes = 'SUCCESSFUL';
+type SuccessTypes = 'SUCCESSFUL' | 'CREATED';
 type ErrorTypes = 'BAD_REQUEST' | 'INVALID_DATA' | 'NOT_FOUND' | 'CONFLICT';
 
 export type ServiceResponseSuccess<T> = {

@@ -1,3 +1,4 @@
+import NewMatch from '../Interfaces/NewMatch';
 import MatchModel from '../models/MatchModel';
 import { IMatchModel } from '../Interfaces/IMatchModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
@@ -27,5 +28,11 @@ export default class MatchService {
     const data = await this.matchModel.editMatch(id, bodyData);
 
     return { status: 'SUCCESSFUL', data };
+  }
+
+  public async postNewMatch(bodyData: NewMatch): Promise<ServiceResponse<object>> {
+    const data = await this.matchModel.addNewMatch(bodyData);
+
+    return { status: 'CREATED', data };
   }
 }

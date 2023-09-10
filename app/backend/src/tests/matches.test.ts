@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import chaiHttp = require('chai-http');
 
 import SequelizeMatch from '../database/models/SequelizeMatch';
-import app from '../app';
+import { app } from '../app';
 import { match, matchInProgress, matches, matchesInProgress, payloadData } from './mocks/matches.mock';
 import jwtUtil from '../utils/jwtUtil';
 

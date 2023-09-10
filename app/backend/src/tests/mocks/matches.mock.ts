@@ -1,4 +1,5 @@
 const match = {
+  "id": 1,
   "homeTeamId": 16,
   "homeTeamGoals": 1,
   "awayTeamId": 8,
@@ -13,6 +14,7 @@ const match = {
 }
 
 const matchInProgress = {
+  "id": 1,
   "homeTeamId": 16,
   "homeTeamGoals": 2,
   "awayTeamId": 9,
@@ -27,12 +29,10 @@ const matchInProgress = {
 }
 
 const matches = [{
-  id: 1,
-  ...match
+  ...match,
 }]
 
 const matchesInProgress = [{
-  id: 1,
   ...matchInProgress,
 }]
 

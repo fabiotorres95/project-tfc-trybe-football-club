@@ -1,7 +1,9 @@
+import NewMatch from '../Interfaces/NewMatch';
 import SequelizeTeam from '../database/models/SequelizeTeam';
 import SequelizeMatch from '../database/models/SequelizeMatch';
 import { IMatchModel } from '../Interfaces/IMatchModel';
 import IMatchWithTeams from '../Interfaces/IMatchWithTeams';
+import IMatch from '../Interfaces/IMatch';
 
 export default class MatchModel implements IMatchModel {
   private match = SequelizeMatch;
@@ -61,5 +63,13 @@ export default class MatchModel implements IMatchModel {
     await this.match.update(data, { where: { id } });
 
     return { message: `Match ${id} edited successfully` };
+  }
+
+  public async addNewMatch(data: NewMatch): Promise<IMatch> {
+    const dbData = await this.match.create({ ...data, inProgress: true });
+
+    const { id, homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals, inProgress } = dbData;
+
+    return { id, homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals, inProgress };
   }
 }
