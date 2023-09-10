@@ -31,6 +31,11 @@ export default class MatchService {
   }
 
   public async postNewMatch(bodyData: NewMatch): Promise<ServiceResponse<object>> {
+    if (bodyData.awayTeamId === bodyData.homeTeamId) {
+      return {
+        status: 'UNPROCESSABLE',
+        data: { message: 'It is not possible to create a match with two equal teams' } };
+    }
     const data = await this.matchModel.addNewMatch(bodyData);
 
     return { status: 'CREATED', data };
