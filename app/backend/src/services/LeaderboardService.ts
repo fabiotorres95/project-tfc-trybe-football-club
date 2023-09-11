@@ -18,12 +18,17 @@ export default class LeaderboardService {
     const teams = await this.teamModel.findAll();
     const matches = await this.matchModel.findAll(inProgress);
 
-    const data = teams.map((team) => {
+    const list = teams.map((team) => {
       const teamHomeMatches = matches.filter((match) => match.homeTeamId === team.id);
 
       const homeStats = LeaderboardService.teamHomeStats(team, teamHomeMatches);
       return homeStats;
     });
+
+    let data = list.sort((a, b) => b.goalsFavor - a.goalsFavor);
+    data = list.sort((a, b) => b.goalsBalance - a.goalsBalance);
+    data = list.sort((a, b) => b.totalVictories - a.totalVictories);
+    data = list.sort((a, b) => b.totalPoints - a.totalPoints);
 
     return { status: 'SUCCESSFUL', data };
   }
@@ -33,12 +38,17 @@ export default class LeaderboardService {
     const teams = await this.teamModel.findAll();
     const matches = await this.matchModel.findAll(inProgress);
 
-    const data = teams.map((team) => {
+    const list = teams.map((team) => {
       const teamAwayMatches = matches.filter((match) => match.awayTeamId === team.id);
 
       const awayStats = LeaderboardService.teamAwayStats(team, teamAwayMatches);
       return awayStats;
     });
+
+    let data = list.sort((a, b) => b.goalsFavor - a.goalsFavor);
+    data = list.sort((a, b) => b.goalsBalance - a.goalsBalance);
+    data = list.sort((a, b) => b.totalVictories - a.totalVictories);
+    data = list.sort((a, b) => b.totalPoints - a.totalPoints);
 
     return { status: 'SUCCESSFUL', data };
   }
