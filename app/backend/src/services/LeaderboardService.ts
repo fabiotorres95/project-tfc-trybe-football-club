@@ -1,4 +1,5 @@
-import TeamStats from '../Interfaces/TeamStats';
+import { ServiceResponse } from '../Interfaces/ServiceResponse';
+// import TeamStats from '../Interfaces/TeamStats';
 import IMatchWithTeams from '../Interfaces/IMatchWithTeams';
 import TeamModel from '../models/TeamModel';
 import MatchModel from '../models/MatchModel';
@@ -12,34 +13,34 @@ export default class LeaderboardService {
     private teamModel: ITeamModel = new TeamModel(),
   ) {}
 
-  public async getHomeLeaderboard(): Promise<TeamStats[]> {
+  public async getHomeLeaderboard(): Promise<ServiceResponse<object>> {
     const inProgress = false;
     const teams = await this.teamModel.findAll();
     const matches = await this.matchModel.findAll(inProgress);
 
-    const result = teams.map((team) => {
+    const data = teams.map((team) => {
       const teamHomeMatches = matches.filter((match) => match.homeTeamId === team.id);
 
       const homeStats = LeaderboardService.teamHomeStats(team, teamHomeMatches);
       return homeStats;
     });
 
-    return result;
+    return { status: 'SUCCESSFUL', data };
   }
 
-  public async getAwayLeaderboard(): Promise<TeamStats[]> {
+  public async getAwayLeaderboard(): Promise<ServiceResponse<object>> {
     const inProgress = false;
     const teams = await this.teamModel.findAll();
     const matches = await this.matchModel.findAll(inProgress);
 
-    const result = teams.map((team) => {
+    const data = teams.map((team) => {
       const teamAwayMatches = matches.filter((match) => match.awayTeamId === team.id);
 
       const awayStats = LeaderboardService.teamAwayStats(team, teamAwayMatches);
       return awayStats;
     });
 
-    return result;
+    return { status: 'SUCCESSFUL', data };
   }
 
   // public async getLeaderboard(): Promise<TeamStats[]> {
@@ -70,7 +71,7 @@ export default class LeaderboardService {
     const goalsFavor = teamHomeMatches.map((m) => m.homeTeamGoals).reduce((a, b) => a + b);
     const goalsOwn = teamHomeMatches.map((m) => m.awayTeamGoals).reduce((a, b) => a + b);
     const goalsBalance = goalsFavor - goalsOwn;
-    const efficiency = (totalPoints / (totalGames * 3)) * 100;
+    const efficiency = Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
 
     const p1 = { name, totalPoints, totalGames, totalVictories, totalDraws };
     const p2 = { totalLosses, goalsFavor, goalsOwn, goalsBalance, efficiency };
@@ -87,7 +88,7 @@ export default class LeaderboardService {
     const goalsFavor = teamAwayMatches.map((m) => m.awayTeamGoals).reduce((a, b) => a + b);
     const goalsOwn = teamAwayMatches.map((m) => m.homeTeamGoals).reduce((a, b) => a + b);
     const goalsBalance = goalsFavor - goalsOwn;
-    const efficiency = (totalPoints / (totalGames * 3)) * 100;
+    const efficiency = Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
 
     const p1 = { name, totalPoints, totalGames, totalVictories, totalDraws };
     const p2 = { totalLosses, goalsFavor, goalsOwn, goalsBalance, efficiency };
